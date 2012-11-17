@@ -16,4 +16,3 @@ Quick start
           'granular_access',
       )
 
-# TODO: tests in package
