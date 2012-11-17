@@ -3,7 +3,7 @@ from distutils.core import setup
 
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
-README_FILEPATH = os.path.join(CURRENT_DIR, 'README.rst')
+README_FILEPATH = os.path.join(CURRENT_DIR, 'README.txt')
 
 
 setup(
