@@ -1,6 +1,3 @@
-=====
-Granular access
-=====
 
 Granular access is django app for giving permissions on set of models for users
 or groups.
