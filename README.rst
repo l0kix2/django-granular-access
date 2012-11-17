@@ -16,4 +16,4 @@ Quick start
           'granular_access',
       )
 
-# TODO: south initial migration
+# TODO: tests in package
