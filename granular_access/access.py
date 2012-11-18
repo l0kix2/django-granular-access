@@ -1,6 +1,5 @@
 # coding: utf-8
 
-# TODO: jsonfield lib
 # TODO: reverse get
 
 from __future__ import unicode_literals
