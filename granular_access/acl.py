@@ -32,7 +32,3 @@ def get_user_groups(user):
         group_getter = get_function_by_path(GET_GROUPS)
         return group_getter(user)
 
-def fetch_lookups(acl_queryset):
-    for acl in acl_queryset:
-        yield {'conditions': acl.lookup.conditions,
-               'exclusions': acl.lookup.exclusions}
