@@ -6,9 +6,9 @@ from __future__ import unicode_literals
 
 from django.contrib.contenttypes.models import ContentType
 
-from .models import ModelLookup, ACL
+from .models import ACL
 from .acl import match_acl, fetch_lookups
-from .query import QueryBuilder
+from stored_filters.query import QueryBuilder
 
 
 def filter_available(to, action, queryset):
@@ -51,7 +51,9 @@ def create_permission(user=None, group=None, action='',
         raise Exception(
             'You should specify model_class or app_label and model_name')
 
-    lookup = ModelLookup.objects.create(
+    # TODO: stored_filters should have api for this
+    from stored_filters.models import Filter
+    lookup = Filter.objects.create(
         conditions=conditions, exclusions=exclusions, content_type=content_type
     )
 

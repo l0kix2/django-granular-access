@@ -4,7 +4,8 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import User, Group
 from django.contrib.contenttypes.models import ContentType
 
-from granular_access.models import ModelLookup, ACL
+from stored_filters.models import Filter
+from granular_access.models import ACL
 from granular_access.tests.base import BaseTest
 from granular_access.acl import match_acl
 
@@ -14,7 +15,7 @@ class MatchACLTest(BaseTest):
         self.joker = User.objects.create_user(username='joker')
         self.superheroes = Group.objects.create(name='superheroes')
 
-        self.lookup = ModelLookup.objects.create(
+        self.lookup = Filter.objects.create(
             content_type=ContentType.objects.get_for_model(User))
 
     def test_user_personal_acl(self):

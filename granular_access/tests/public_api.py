@@ -6,7 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 
 from .base import BaseTest
 
-from granular_access.models import ModelLookup, ACL
+from stored_filters.models import Filter
+from granular_access.models import ACL
 from granular_access.access import get_filter_query, filter_available
 from granular_access.access import create_permission
 
@@ -19,21 +20,21 @@ class PublicApiTest(BaseTest):
         self.god = User.objects.create_user(username='god',
                                             email='god@gmail.com')
 
-        lookup = ModelLookup.objects.create(
+        lookup = Filter.objects.create(
             content_type=ContentType.objects.get_for_model(User),
             conditions=[{'username__startswith': 'joker'}]
         )
         ACL.objects.create(user=self.batman, group=None,
                            lookup=lookup, action='edit')
 
-        blank_lookup = ModelLookup.objects.create(
+        blank_lookup = Filter.objects.create(
             content_type=ContentType.objects.get_for_model(User),
             conditions=None, exclusions=None,
         )
         ACL.objects.create(user=self.joker, group=None,
                            lookup=blank_lookup, action='edit')
 
-        god_lookup = ModelLookup.objects.create(
+        god_lookup = Filter.objects.create(
             content_type=ContentType.objects.get_for_model(User),
             conditions={}, exclusions=None,
         )

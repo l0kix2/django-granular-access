@@ -8,31 +8,18 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'ModelLookup'
-        db.create_table('granular_access_modellookup', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('description', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
-            ('conditions', self.gf('jsonfield.fields.JSONField')(null=True, blank=True)),
-            ('exclusions', self.gf('jsonfield.fields.JSONField')(null=True, blank=True)),
-            ('content_type', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['contenttypes.ContentType'])),
-        ))
-        db.send_create_signal('granular_access', ['ModelLookup'])
-
         # Adding model 'ACL'
         db.create_table('granular_access_acl', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
             ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.Group'], null=True, blank=True)),
-            ('lookup', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['granular_access.ModelLookup'])),
+            ('lookup', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['stored_filters.Filter'])),
             ('action', self.gf('django.db.models.fields.SlugField')(max_length=50, blank=True)),
         ))
         db.send_create_signal('granular_access', ['ACL'])
 
 
     def backwards(self, orm):
-        # Deleting model 'ModelLookup'
-        db.delete_table('granular_access_modellookup')
-
         # Deleting model 'ACL'
         db.delete_table('granular_access_acl')
 
@@ -79,11 +66,11 @@ class Migration(SchemaMigration):
             'action': ('django.db.models.fields.SlugField', [], {'max_length': '50', 'blank': 'True'}),
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.Group']", 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'lookup': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['granular_access.ModelLookup']"}),
+            'lookup': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['stored_filters.Filter']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'})
         },
-        'granular_access.modellookup': {
-            'Meta': {'object_name': 'ModelLookup'},
+        'stored_filters.filter': {
+            'Meta': {'object_name': 'Filter'},
             'conditions': ('jsonfield.fields.JSONField', [], {'null': 'True', 'blank': 'True'}),
             'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
             'description': ('django.db.models.fields.CharField', [], {'max_length': '255', 'blank': 'True'}),
