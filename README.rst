@@ -24,7 +24,7 @@ Quick start
     >>> create_permission(user=joker, action='kill_and_rob', app_label='auth',
     ...     model_name='user', conditions=[{'username__startswith': 'victim'}])
 
-    You can find more examples in tests.
+You can find more examples in tests.
 
 4. Filter available models using filter_available function::
 
