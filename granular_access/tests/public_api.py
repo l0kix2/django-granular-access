@@ -6,10 +6,10 @@ from django.contrib.contenttypes.models import ContentType
 
 from .base import BaseTest
 
-from stored_filters.models import Filter
+from stored_filters import create_filter
 from granular_access.models import ACL
 from granular_access.access import get_filter_query, filter_available
-from granular_access.access import create_permission
+from granular_access.access import create_permission, has_perm
 
 class PublicApiTest(BaseTest):
     def setUp(self):
@@ -20,24 +20,18 @@ class PublicApiTest(BaseTest):
         self.god = User.objects.create_user(username='god',
                                             email='god@gmail.com')
 
-        lookup = Filter.objects.create(
-            content_type=ContentType.objects.get_for_model(User),
-            conditions=[{'username__startswith': 'joker'}]
-        )
+        lookup = create_filter(model_class=User,
+            conditions=[{'username__startswith': 'joker'}])
         ACL.objects.create(user=self.batman, group=None,
                            lookup=lookup, action='edit')
 
-        blank_lookup = Filter.objects.create(
-            content_type=ContentType.objects.get_for_model(User),
-            conditions=None, exclusions=None,
-        )
+        blank_lookup = create_filter(model_class=User,
+            conditions=None, exclusions=None)
         ACL.objects.create(user=self.joker, group=None,
                            lookup=blank_lookup, action='edit')
 
-        god_lookup = Filter.objects.create(
-            content_type=ContentType.objects.get_for_model(User),
-            conditions={}, exclusions=None,
-        )
+        god_lookup = create_filter(model_class=User,
+            conditions={}, exclusions=None)
         ACL.objects.create(user=self.god, group=None,
                            lookup=god_lookup, action='edit')
 
@@ -65,6 +59,16 @@ class PublicApiTest(BaseTest):
         self.assertQuerysetEqualsList(
             filtered,
             [self.joker]
+        )
+
+    def test_has_perm(self):
+        self.assertTrue(
+            has_perm(user=self.batman, action='edit', instance=self.joker)
+        )
+
+    def test_has_no_perm(self):
+        self.assertFalse(
+            has_perm(user=self.batman, action='edit', instance=self.god)
         )
 
     def test_filter_available_blank_query(self):

@@ -3,8 +3,9 @@
 # TODO: reverse get
 
 from __future__ import unicode_literals
-
 from django.contrib.contenttypes.models import ContentType
+
+from stored_filters import create_filter
 
 from .models import ACL
 from .acl import match_acl, fetch_lookups
@@ -26,6 +27,14 @@ def filter_available(to, action, queryset):
         return queryset.none()
     return queryset.filter(query)
 
+def has_perm(user, action, instance):
+    options = instance._meta
+    model = ContentType.objects.get_by_natural_key(
+        app_label=options.app_label, model=options.module_name).model_class()
+    queryset = model.objects.all()
+    available = filter_available(to=user, action=action, queryset=queryset)
+    return available.filter(pk=instance.pk).exists()
+
 def get_filter_query(user, action, app_label, model_name):
     """Get query as Q object for filtering objects.
     to -- user instance
@@ -42,23 +51,13 @@ def get_filter_query(user, action, app_label, model_name):
 def create_permission(user=None, group=None, action='',
                       conditions=None, exclusions=None,
                       model_class=None, app_label=None, model_name=None):
-    if model_class:
-        content_type = ContentType.objects.get_for_model(model_class)
-    elif app_label and model_name:
-        content_type = ContentType.objects.get_by_natural_key(
-            app_label=app_label, model=model_name)
-    else:
-        raise Exception(
-            'You should specify model_class or app_label and model_name')
 
-    # TODO: stored_filters should have api for this
-    from stored_filters.models import Filter
-    lookup = Filter.objects.create(
-        conditions=conditions, exclusions=exclusions, content_type=content_type
-    )
+    lookup = create_filter(conditions, exclusions,
+        model_class, app_label, model_name)
 
     ACL.objects.create(user=user, group=group, action=action, lookup=lookup)
 
 def get_permissions_owner(model_class=None, app_label=None, model_name=None,
                           action=None):
     pass
+

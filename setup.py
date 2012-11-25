@@ -8,7 +8,7 @@ README_FILEPATH = os.path.join(CURRENT_DIR, 'README.rst')
 
 setup(
     name='django-granular-access',
-    version='0.1',
+    version='0.1.1',
     packages=[
         'granular_access',
         'granular_access.tests',
